@@ -55,6 +55,8 @@ class Script(scripts.Script):
 
     def process(self, p, mask_method, output_mask, *args):
         del(args)
+        if mask_method == _MASK_MANUAL:
+            return
         if not hasattr(p, 'image_mask'):
             return
         if mask_method == _MASK_REMOVE_BG:
@@ -66,9 +68,14 @@ class Script(scripts.Script):
         #print('mask image:', p.image_mask)
         #print('images:', p.init_images)
 
-    def postprocess(self, p, processed, *args):
+    def postprocess(self, p, processed, mask_method, output_mask, *args):
+        print(*args)
         del(args)
+        if not output_mask:
+            return
         if not hasattr(p, 'image_mask'):
+            return
+        if not getattr(p, 'image_mask'):
             return
         processed.images.append(p.image_mask)
 
